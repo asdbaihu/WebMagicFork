@@ -29,12 +29,12 @@ public class SampleCrawlerSet  implements PageProcessor
   {
     if (page.getUrl().regex(URL_POST).match())
     {
+      page.putField("title", page.getHtml().xpath(regexTitle).toString().replaceAll("<[^>]*>",""));
+      page.putField("content", StringUtils.join(page.getHtml().xpath(regexContent).all(), "\n").replaceAll("<[^>]*>",""));//.replaceAll("<[^>]*>",""));    //匹配种子smartContent()
       if (page.getResultItems().get("title") == null)
       {
-          page.setSkip(true);
+    	  page.setSkip(true);
       }
-      page.putField("title", page.getHtml().xpath(regexTitle).toString().replaceAll("<[^>]*>",""));
-      page.putField("content", StringUtils.join(page.getHtml().xpath(regexContent).all(), "\n"));//.replaceAll("<[^>]*>",""));    //匹配种子smartContent()
     }
     
     
@@ -49,7 +49,8 @@ public class SampleCrawlerSet  implements PageProcessor
           Matcher matcher = href.matcher(link);
           matcher.find();
           link = matcher.group(1);
-          fullLink = post_piece + link;
+          fullLink = link;
+//          fullLink = post_piece + link;
           Request request = new Request(fullLink);
           page.addTargetRequest(request);
         }
