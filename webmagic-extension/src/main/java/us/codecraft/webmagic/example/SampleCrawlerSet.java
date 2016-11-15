@@ -40,22 +40,39 @@ public class SampleCrawlerSet  implements PageProcessor
     
     else if (page.getUrl().regex(URL_LIST).match())
     {
-        List<String> linkList = page.getHtml().xpath(regex_link).all();
+//        String rawText = page.getRawText();
+        String rawText = page.getRawText().replaceAll("\\\\", ""); //fucking remember
         
         Pattern href = Pattern.compile(regex_href);
         String fullLink = null;
-        for (String link : linkList)
+        Matcher matcher = href.matcher(rawText);
+        while(matcher.find())
         {
-          Matcher matcher = href.matcher(link);
-          matcher.find();
-          link = matcher.group(1);
-          fullLink = link;
-//          fullLink = post_piece + link;
+          fullLink = matcher.group(1);
           Request request = new Request(fullLink);
           page.addTargetRequest(request);
         }
         page.setSkip(true);
     }
+//    else if (page.getUrl().regex(URL_LIST).match())
+//    {
+//    	String linkList = page.getRawText().replaceAll("\\", "");
+////        List<String> linkList = page.getHtml().xpath(regex_link).all();
+//    	
+//    	Pattern href = Pattern.compile(regex_href);
+//    	String fullLink = null;
+////        for (String link : linkList)
+////        {
+////          Matcher matcher = href.matcher(link);
+////          matcher.find();
+////          link = matcher.group(1);
+////          fullLink = link;
+//////          fullLink = post_piece + link;
+////          Request request = new Request(fullLink);
+////          page.addTargetRequest(request);
+////        }
+//    	page.setSkip(true);
+//    }
     
     else
     {
